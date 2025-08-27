@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservasi Jum'at Berkah - Klinik Nabilah Pulungan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* light blue background */
+        }
+        .form-container {
+            background: white;
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .form-container:hover {
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        .btn-primary {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* blue-700 */
+        }
+        .input-field {
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem; /* 8px */
+            padding: 0.75rem 1rem; /* 12px 16px */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #2563eb; /* blue-600 */
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .input-field:disabled {
+            background-color: #e5e7eb; /* gray-200 */
+            cursor: not-allowed;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #3b82f6, #818cf8);
+            color: white;
+        }
+        
+        /* Styles for the printable coupon */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #coupon-container, #coupon-container * {
+                visibility: visible;
+            }
+            #coupon-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+        #coupon {
+            border: 2px dashed #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-800">Klinik Nabilah Pulungan</h1>
+            <p class="text-2xl font-semibold text-indigo-500 mt-2">✨ Program Jum'at Berkah ✨</p>
+            <p class="text-gray-600 mt-2">Formulir Reservasi Treatment Khusus Hari Jum'at</p>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Guide Section -->
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-8" role="alert">
+                <p class="font-bold text-lg mb-2">Panduan Mengikuti Event Jum'at Berkah</p>
+                <ol class="list-decimal list-inside space-y-1">
+                    <li>Isi formulir ini dengan data yang lengkap dan benar.</li>
+                    <li>Pilih treatment yang diinginkan (selama kuota masih ada).</li>
+                    <li>Pilih jam kedatangan. Jika suatu jam sudah penuh (3 orang), maka tidak bisa dipilih.</li>
+                    <li>Setelah berhasil mendaftar, Anda akan mendapatkan kupon digital.</li>
+                    <li><b>Cetak atau screenshot kupon</b> tersebut sebagai bukti pendaftaran.</li>
+                    <li>Tunjukkan kupon saat datang ke klinik untuk verifikasi.</li>
+                </ol>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-10">
+                <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-2 text-gray-600">Memuat kuota dan jadwal terbaru...</p>
+            </div>
+
+            <!-- Reservation Form -->
+            <div id="form-section" class="form-container p-6 sm:p-10 hidden">
+                <form id="reservationForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Personal Identity -->
+                        <div class="md:col-span-2">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Identitas Pemesan</h3>
+                        </div>
+                        <div>
+                            <label for="namaPemesan" class="block text-sm font-medium text-gray-700 mb-1">Nama Pemesan</label>
+                            <input type="text" id="namaPemesan" name="namaPemesan" class="w-full input-field" required>
+                        </div>
+                        <div>
+                            <label for="noHp" class="block text-sm font-medium text-gray-700 mb-1">No. HP / WhatsApp</label>
+                            <input type="tel" id="noHp" name="noHp" class="w-full input-field" required placeholder="Contoh: 081234567890">
+                        </div>
+                        <div>
+                            <label for="instagram" class="block text-sm font-medium text-gray-700 mb-1">Akun Instagram (Opsional)</label>
+                            <input type="text" id="instagram" name="instagram" class="w-full input-field" placeholder="Contoh: @klinik.nabilah">
+                        </div>
+                        <div>
+                            <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                            <input type="text" id="alamat" name="alamat" class="w-full input-field" required>
+                        </div>
+                        
+                        <!-- Baby/Kid Identity -->
+                        <div class="md:col-span-2 mt-6">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Data Baby / Kid</h3>
+                        </div>
+                        <div>
+                            <label for="namaAnak" class="block text-sm font-medium text-gray-700 mb-1">Nama Baby / Kid</p>
+                            <input type="text" id="namaAnak" name="namaAnak" class="w-full input-field" required>
+                        </div>
+                        <div>
+                            <label for="tglLahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</p>
+                            <input type="date" id="tglLahir" name="tglLahir" class="w-full input-field" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="jenisKelamin" value="Laki-laki" class="text-blue-600 focus:ring-blue-500" required>
+                                    <span class="ml-2 text-gray-700">Laki-laki</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="jenisKelamin" value="Perempuan" class="text-pink-600 focus:ring-pink-500">
+                                    <span class="ml-2 text-gray-700">Perempuan</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Treatment Details -->
+                        <div class="md:col-span-2 mt-6">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">3. Detail Reservasi</h3>
+                        </div>
+                        <div>
+                            <label for="treatment" class="block text-sm font-medium text-gray-700 mb-1">Pilih Treatment</label>
+                            <select id="treatment" name="treatment" class="w-full input-field" required></select>
+                        </div>
+                        <div>
+                            <label for="terapis" class="block text-sm font-medium text-gray-700 mb-1">Pilih Terapis</label>
+                            <select id="terapis" name="terapis" class="w-full input-field" required></select>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label for="jamKedatangan" class="block text-sm font-medium text-gray-700 mb-1">Pilih Jam Kedatangan</label>
+                             <select id="jamKedatangan" name="jamKedatangan" class="w-full input-field" required></select>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="mt-8 text-center">
+                        <button type="submit" id="submitBtn" class="w-full md:w-1/2 btn-primary font-bold py-3 px-4 rounded-lg text-lg">
+                            <span id="btn-text">Daftar Sekarang</span>
+                            <span id="btn-loader" class="hidden">
+                                <svg class="animate-spin h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Memproses...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Success Modal -->
+            <div id="success-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all scale-95 opacity-0" id="success-content">
+                    <svg class="w-20 h-20 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-4">Pendaftaran Berhasil!</h2>
+                    <p class="text-gray-600 mt-2">Reservasi Anda untuk program Jum'at Berkah telah kami terima. Silakan cetak atau screenshot kupon di bawah ini.</p>
+                    <div class="mt-6">
+                        <button id="printCouponBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg">Cetak Kupon</button>
+                        <button id="closeModalBtn" class="w-full mt-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg">Tutup</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Printable Coupon Area -->
+    <div id="coupon-container" class="p-4 hidden">
+        <div id="coupon" class="max-w-md mx-auto p-6 rounded-2xl">
+            <div class="text-center pb-4 border-b-2 border-dashed border-blue-400">
+                <h2 class="text-2xl font-bold text-blue-800">Klinik Nabilah Pulungan</h2>
+                <p class="text-lg font-semibold text-indigo-500">Kupon Jum'at Berkah</p>
+            </div>
+            <div class="py-4 space-y-2">
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">ID Reservasi:</span>
+                    <span id="coupon-id" class="font-mono text-gray-800"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">Nama Pemesan:</span>
+                    <span id="coupon-nama" class="font-bold text-gray-800"></span>
+                </div>
+                 <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">Nama Anak:</span>
+                    <span id="coupon-anak" class="font-bold text-gray-800"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">Treatment:</span>
+                    <span id="coupon-treatment" class="font-bold text-gray-800"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">Jam Kedatangan:</span>
+                    <span id="coupon-jam" class="font-bold text-gray-800"></span>
+                </div>
+                 <div class="flex justify-between">
+                    <span class="font-semibold text-gray-600">Terapis:</span>
+                    <span id="coupon-terapis" class="font-bold text-gray-800"></span>
+                </div>
+            </div>
+            <div class="text-center pt-4 border-t-2 border-dashed border-blue-400">
+                <p class="text-sm text-gray-600">Harap tunjukkan kupon ini saat verifikasi di klinik. Terima kasih!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- PENGATURAN APLIKASI ---
+        const AppConfig = {
+            // ===================================================================================
+            // PENTING: GANTI URL DI BAWAH INI dengan URL Web App dari Google Apps Script Anda
+            // ===================================================================================
+            googleScriptUrl: 'https://script.google.com/macros/s/AKfycbyzlrBkzQJBJBkxU8fEzOKqxKZSoLROp9NWsWprsNVoNDQc7RyhHcX7NOFC4VoM6y6Q/exec', 
+            
+            // Daftar treatment beserta kuota totalnya
+            treatments: [
+                { name: "Baby Spa", quota: 3 },
+                { name: "Kids Spa", quota: 2 },
+                { name: "Pijat Bayi", quota: 3 }
+            ],
+
+            // Daftar terapis yang tersedia
+            therapists: [
+                "Terapis Evi", "Terapis Aisyah", "Terapis Riska", "Terapis Rina", "Terapis Desva", "Terapis Linda"
+            ],
+
+            // Jam kedatangan yang bisa dipilih
+            timeSlots: [
+                "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"
+            ],
+            
+            // Maksimal jumlah pasien pada jam yang sama
+            maxPatientsPerSlot: 3
+        };
+        // --- AKHIR PENGATURAN ---
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('reservationForm');
+            const treatmentSelect = document.getElementById('treatment');
+            const therapistSelect = document.getElementById('terapis');
+            const timeSlotSelect = document.getElementById('jamKedatangan');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+            const successModal = document.getElementById('success-modal');
+            const successContent = document.getElementById('success-content');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const printCouponBtn = document.getElementById('printCouponBtn');
+            const loadingState = document.getElementById('loading-state');
+            const formSection = document.getElementById('form-section');
+
+            // Fetch current reservation data and initialize the form
+            async function initializeRealtimeForm() {
+                // *** FIX: Check if the URL is still a placeholder ***
+                if (AppConfig.googleScriptUrl === 'GANTI_DENGAN_URL_SCRIPT_ANDA' || !AppConfig.googleScriptUrl) {
+                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">
+                        KONFIGURASI BELUM SELESAI.<br>
+                        Harap ganti placeholder 'GANTI_DENGAN_URL_SCRIPT_ANDA' di dalam file HTML dengan URL Google Apps Script Anda.
+                    </p>`;
+                    return;
+                }
+
+                try {
+                    const response = await fetch(AppConfig.googleScriptUrl);
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                    }
+                    const result = await response.json();
+
+                    if (result.result === 'success') {
+                        updateFormUI(result.data);
+                    } else {
+                        throw new Error(result.error || 'Failed to fetch data from script');
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching initial data:", error);
+                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">
+                        Gagal memuat data kuota. Pastikan URL Google Apps Script benar dan sudah di-deploy dengan benar.
+                    </p>`;
+                } finally {
+                    // Hide loading spinner only if no critical error
+                    if (loadingState.querySelector('svg')) {
+                       loadingState.classList.add('hidden');
+                    }
+                    formSection.classList.remove('hidden');
+                }
+            }
+            
+            function updateFormUI(serverData) {
+                const { treatmentCounts, timeSlotCounts } = serverData;
+
+                // Populate treatments with real-time quota
+                treatmentSelect.innerHTML = ''; // Clear existing options
+                AppConfig.treatments.forEach(treatment => {
+                    const booked = treatmentCounts[treatment.name] || 0;
+                    const remaining = treatment.quota - booked;
+                    const option = document.createElement('option');
+                    option.value = treatment.name;
+                    option.textContent = `${treatment.name} (Sisa kuota: ${remaining})`;
+                    if (remaining <= 0) {
+                        option.disabled = true;
+                        option.textContent += ' - Penuh';
+                    }
+                    treatmentSelect.appendChild(option);
+                });
+
+                // Populate time slots with real-time availability
+                timeSlotSelect.innerHTML = ''; // Clear existing options
+                AppConfig.timeSlots.forEach(slot => {
+                    const booked = timeSlotCounts[slot] || 0;
+                    const option = document.createElement('option');
+                    option.value = slot;
+                    option.textContent = `${slot} WIB (Terisi: ${booked}/${AppConfig.maxPatientsPerSlot})`;
+                    if (booked >= AppConfig.maxPatientsPerSlot) {
+                        option.disabled = true;
+                        option.textContent += ' - Penuh';
+                    }
+                    timeSlotSelect.appendChild(option);
+                });
+
+                // Populate static therapists list
+                therapistSelect.innerHTML = ''; // Clear existing options
+                AppConfig.therapists.forEach(therapist => {
+                    const option = document.createElement('option');
+                    option.value = therapist;
+                    option.textContent = therapist;
+                    therapistSelect.appendChild(option);
+                });
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+                submitBtn.disabled = true;
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    // Using 'fetch' with POST to submit data
+                    const response = await fetch(AppConfig.googleScriptUrl, {
+                        method: 'POST',
+                        redirect: "follow",
+                        body: JSON.stringify(data),
+                        headers: { "Content-Type": "text/plain;charset=utf-8" }
+                    });
+                    
+                    const result = await response.json();
+                    if (result.result !== 'success') {
+                       throw new Error('Submission failed');
+                    }
+
+                    showSuccess(data);
+                    form.reset();
+                    // Reload form to get latest data after submission
+                    loadingState.classList.remove('hidden');
+                    formSection.classList.add('hidden');
+                    initializeRealtimeForm();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+                } finally {
+                    btnText.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function showSuccess(data) {
+                document.getElementById('coupon-id').textContent = 'JB' + Date.now().toString().slice(-6);
+                document.getElementById('coupon-nama').textContent = data.namaPemesan;
+                document.getElementById('coupon-anak').textContent = data.namaAnak;
+                document.getElementById('coupon-treatment').textContent = data.treatment;
+                document.getElementById('coupon-jam').textContent = data.jamKedatangan + ' WIB';
+                document.getElementById('coupon-terapis').textContent = data.terapis;
+
+                successModal.classList.remove('hidden');
+                setTimeout(() => {
+                    successContent.classList.remove('scale-95', 'opacity-0');
+                }, 50);
+            }
+
+            closeModalBtn.addEventListener('click', () => {
+                successContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    successModal.classList.add('hidden');
+                }, 300);
+            });
+
+            printCouponBtn.addEventListener('click', () => {
+                window.print();
+            });
+
+            // Start the application
+            initializeRealtimeForm();
+        });
+    </script>
+</body>
+</html>
