@@ -9,80 +9,28 @@
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://css.gg/css?=|check-o|close-o|info" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-        .form-container {
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            transition: all 0.3s ease-in-out;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
-        }
-        .btn-primary:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-        .input-field {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .form-container { background: white; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .btn-primary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; transition: all 0.3s; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2); }
+        .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+        .input-field { border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.75rem 1rem; transition: all 0.3s; }
+        .input-field:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); transition: all 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #coupon-container, #coupon-container * {
-                visibility: visible;
-            }
-            #coupon-container {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: white;
-                display: flex !important;
-                justify-content: center;
-                align-items: center;
-            }
+            body * { visibility: hidden; }
+            #coupon-container, #coupon-container * { visibility: visible; }
+            #coupon-container { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex !important; justify-content: center; align-items: center; }
         }
-        
-        .tab-button.active {
-            background: linear-gradient(135deg, #3b82f6, #818cf8);
-            color: white;
-        }
+        .tab-button.active { background: linear-gradient(135deg, #3b82f6, #818cf8); color: white; }
+        .alert { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex; align-items: center; }
+        .alert-error { background-color: #fee2e2; border: 1px solid #fecaca; color: #dc2626; }
+        .alert-success { background-color: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -103,11 +51,11 @@
             <p class="font-bold text-lg mb-2">Panduan Mengikuti Event Jum'at Berkah</p>
             <ol class="list-decimal list-inside space-y-1">
                 <li>Isi formulir ini dengan data yang lengkap dan benar.</li>
-                <li>Pilih treatment yang diinginkan (selama kuota masih ada).</li>
-                <li>Pilih jam kedatangan yang tersedia.</li>
+                <li>Pilih treatment dan jam kedatangan yang diinginkan (selama kuota masih ada).</li>
                 <li>Setelah berhasil mendaftar, Anda akan mendapatkan kupon digital.</li>
                 <li><b>Cetak atau screenshot kupon</b> tersebut sebagai bukti pendaftaran.</li>
                 <li>Tunjukkan kupon saat datang ke klinik untuk verifikasi.</li>
+                <li><b>Setiap orang hanya dapat mendaftar satu kali (berdasarkan NIK, No HP, dan Nama).</b></li>
             </ol>
         </div>
         
@@ -121,6 +69,8 @@
 
         <div id="form-section" class="form-container p-6 sm:p-10 hidden animate-fade-in">
             <form id="reservationForm">
+                <div id="alert-container"></div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Identitas Pemesan</h3>
@@ -128,6 +78,10 @@
                     <div>
                         <label for="namaPemesan" class="block text-sm font-medium text-gray-700 mb-1">Nama Pemesan</label>
                         <input type="text" id="namaPemesan" name="namaPemesan" class="w-full input-field" required>
+                    </div>
+                    <div>
+                        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+                        <input type="text" id="nik" name="nik" class="w-full input-field" required placeholder="Nomor Induk Kependudukan">
                     </div>
                     <div>
                         <label for="noHp" class="block text-sm font-medium text-gray-700 mb-1">No. HP / WhatsApp</label>
@@ -142,11 +96,11 @@
                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Data Baby / Kid</h3>
                     </div>
                     <div>
-                        <label for="namaAnak" class="block text-sm font-medium text-gray-700 mb-1">Nama Baby / Kid</p>
+                        <label for="namaAnak" class="block text-sm font-medium text-gray-700 mb-1">Nama Baby / Kid</label>
                         <input type="text" id="namaAnak" name="namaAnak" class="w-full input-field" required>
                     </div>
                     <div>
-                        <label for="tglLahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</p>
+                        <label for="tglLahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
                         <input type="date" id="tglLahir" name="tglLahir" class="w-full input-field" required>
                     </div>
                     
@@ -161,10 +115,6 @@
                         <label for="jamKedatangan" class="block text-sm font-medium text-gray-700 mb-1">Pilih Jam Kedatangan</label>
                          <select id="jamKedatangan" name="jamKedatangan" class="w-full input-field" required></select>
                     </div>
-                    <div class="md:col-span-2">
-                        <label for="terapis" class="block text-sm font-medium text-gray-700 mb-1">Pilih Terapis</label>
-                        <select id="terapis" name="terapis" class="w-full input-field" required></select>
-                    </div>
                     
                     <div class="md:col-span-2 mt-6">
                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">4. Keluhan (Opsional)</h3>
@@ -175,7 +125,6 @@
                 </div>
                 
                 <div class="mt-8 text-center">
-                    <!-- Tombol dinonaktifkan secara default -->
                     <button type="submit" id="submitBtn" class="w-full md:w-1/2 btn-primary font-bold py-3 px-4 rounded-lg text-lg" disabled>
                         <span id="btn-text">Daftar Sekarang</span>
                         <span id="btn-loader" class="hidden">
@@ -186,7 +135,7 @@
                             Memproses...
                         </span>
                     </button>
-                    <p id="submit-helper" class="text-sm text-gray-500 mt-2">Pilih treatment terlebih dahulu untuk mendaftar.</p>
+                    <p id="submit-helper" class="text-sm text-gray-500 mt-2">Pilih treatment dan jam kedatangan untuk mendaftar.</p>
                 </div>
             </form>
         </div>
@@ -207,13 +156,13 @@
                 </div>
             </div>
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Daftar Pendaftar (Terbaru)</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Daftar Pendaftar (20 Terbaru)</h3>
             <div id="registrants-container" class="space-y-4"></div>
         </div>
 
         <div id="success-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
             <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all scale-95 opacity-0" id="success-content">
-                <svg class="w-20 h-20 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <i class="gg-check-o" style="color: #22c55e; --ggs: 3; margin: 0 auto;"></i>
                 <h2 class="text-3xl font-bold text-gray-800 mt-4">Pendaftaran Berhasil!</h2>
                 <p class="text-gray-600 mt-2">Reservasi Anda telah kami terima. Silakan cetak atau screenshot kupon di bawah ini.</p>
                 <div class="mt-6">
@@ -225,7 +174,7 @@
 
     </div>
 
-    <!-- Area Kupon yang bisa dicetak (desain baru) -->
+    <!-- Area Kupon yang bisa dicetak -->
     <div id="coupon-container" class="p-4 hidden">
         <div id="coupon" class="max-w-md w-full mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
             <div class="p-6 bg-blue-50">
@@ -240,60 +189,30 @@
                     <p id="coupon-id" class="font-mono text-xl font-bold text-gray-800"></p>
                 </div>
                 <div class="border-t border-dashed my-3"></div>
-                <div>
-                    <p class="text-sm text-gray-500">Nama Pemesan</p>
-                    <p id="coupon-nama" class="font-semibold text-lg text-gray-800"></p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Nama Anak</p>
-                    <p id="coupon-anak" class="font-semibold text-lg text-gray-800"></p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Treatment</p>
-                    <p id="coupon-treatment" class="font-semibold text-lg text-gray-800"></p>
-                </div>
+                <div><p class="text-sm text-gray-500">Nama Pemesan</p><p id="coupon-nama" class="font-semibold text-lg text-gray-800"></p></div>
+                <div><p class="text-sm text-gray-500">Nama Anak</p><p id="coupon-anak" class="font-semibold text-lg text-gray-800"></p></div>
+                <div><p class="text-sm text-gray-500">Treatment</p><p id="coupon-treatment" class="font-semibold text-lg text-gray-800"></p></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-500">Jam Datang</p>
-                        <p id="coupon-jam" class="font-semibold text-lg text-gray-800"></p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Terapis</p>
-                        <p id="coupon-terapis" class="font-semibold text-lg text-gray-800"></p>
-                    </div>
+                    <div><p class="text-sm text-gray-500">Jam Datang</p><p id="coupon-jam" class="font-semibold text-lg text-gray-800"></p></div>
+                    <div><p class="text-sm text-gray-500">Terapis</p><p id="coupon-terapis" class="font-semibold text-lg text-gray-800"></p></div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 border-t">
-                <svg id="barcode" class="w-full"></svg>
-            </div>
-            <div class="p-4 bg-blue-50 text-center text-xs text-blue-700">
-                Tunjukkan kupon ini saat verifikasi. Berlaku untuk <strong id="coupon-tanggal"></strong>.
-            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t"><svg id="barcode" class="w-full"></svg></div>
+            <div class="p-4 bg-blue-50 text-center text-xs text-blue-700">Tunjukkan kupon ini saat verifikasi. Berlaku untuk <strong id="coupon-tanggal"></strong>.</div>
         </div>
     </div>
 
     <script>
         const AppConfig = {
-            googleScriptUrl: 'https://script.google.com/macros/s/AKfycbyz2TfiTCiKQeXuEebo24BvwgJ77CzReWUArGGfQwa2Uy5OznrorC2Li-IssDUTKX9n/exec', 
-            
+            // PENTING: GANTI DENGAN URL WEB APP BARU ANDA SETELAH DEPLOY ULANG
+            googleScriptUrl: 'https://script.google.com/macros/s/AKfycbw1dtdO6N8DJkLaynhcXOXoNfQvbAzxkaFWFhfERRLbB9dXNxHFFzQa_GcXE82j8Gd-Og/exec',
             treatments: [
-                { name: "Baby Hidrotherapy/Mandi Bayi", quota: 3 },
-                { name: "Pijat Accupressure Kids (usia 1 tahun ke atas)", quota: 2 },
-                { name: "Pijat Accupressure Bayi (usia 0 bulan sampai 1 tahun)", quota: 3 }
+                { name: "Baby Hidrotherapy/Mandi Bayi", quota: 2 },
+                { name: "Pijat Accupressure Bayi (usia 0 bulan sampai 1 tahun)", quota: 5 }
             ],
-
-            therapists: [
-                "Terapis Evi", "Terapis Aisyah", "Terapis Riska", "Terapis Rina", "Terapis Desva", "Terapis Linda"
-            ],
-
-            // REVISI: Sistem kuota jam dibuat seperti treatment
             timeSlots: [
-                { time: "12:00", quota: 3 },
-                { time: "13:00", quota: 3 },
-                { time: "14:00", quota: 3 },
-                { time: "15:00", quota: 3 },
-                { time: "16:00", quota: 3 },
-                { time: "17:00", quota: 3 },
+                { time: "12:00", quota: 3 }, { time: "13:00", quota: 3 }, { time: "14:00", quota: 3 },
+                { time: "15:00", quota: 3 }, { time: "16:00", quota: 3 }, { time: "17:00", quota: 3 },
                 { time: "18:00", quota: 3 }
             ]
         };
@@ -301,16 +220,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('reservationForm');
             const treatmentSelect = document.getElementById('treatment');
-            const therapistSelect = document.getElementById('terapis');
             const timeSlotSelect = document.getElementById('jamKedatangan');
             const submitBtn = document.getElementById('submitBtn');
             const submitHelper = document.getElementById('submit-helper');
-            const btnText = document.getElementById('btn-text');
-            const btnLoader = document.getElementById('btn-loader');
             const successModal = document.getElementById('success-modal');
             const successContent = document.getElementById('success-content');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const printCouponBtn = document.getElementById('printCouponBtn');
             const loadingState = document.getElementById('loading-state');
             const formSection = document.getElementById('form-section');
             const guideSection = document.getElementById('guide-section');
@@ -318,148 +232,153 @@
             const tabForm = document.getElementById('tab-form');
             const tabStatistics = document.getElementById('tab-statistics');
             const registrantsContainer = document.getElementById('registrants-container');
-            const totalRegistrationsEl = document.getElementById('total-registrations');
-            const availableSlotsEl = document.getElementById('available-slots');
-            const fullSlotsEl = document.getElementById('full-slots');
+            const alertContainer = document.getElementById('alert-container');
+            
+            function initializeEventListeners() {
+                tabForm.addEventListener('click', () => switchTab('form'));
+                tabStatistics.addEventListener('click', () => switchTab('statistics'));
+                
+                const inputsToValidate = ['namaPemesan', 'nik', 'noHp'];
+                inputsToValidate.forEach(id => {
+                    document.getElementById(id)?.addEventListener('blur', checkExistingRegistration);
+                });
 
-            tabForm.addEventListener('click', () => {
-                tabForm.classList.add('active');
-                tabStatistics.classList.remove('active');
-                formSection.classList.remove('hidden');
-                statisticsSection.classList.add('hidden');
-                guideSection.classList.remove('hidden');
-            });
+                const selectsToValidate = ['treatment', 'jamKedatangan'];
+                selectsToValidate.forEach(id => {
+                     document.getElementById(id)?.addEventListener('change', toggleSubmitButton);
+                });
 
-            tabStatistics.addEventListener('click', () => {
-                tabStatistics.classList.add('active');
-                tabForm.classList.remove('active');
-                statisticsSection.classList.remove('hidden');
-                formSection.classList.add('hidden');
-                guideSection.classList.add('hidden');
-                loadRegistrantsData();
-            });
+                document.getElementById('closeModalBtn').addEventListener('click', () => closeModal());
+                document.getElementById('printCouponBtn').addEventListener('click', () => printCoupon());
+                form.addEventListener('submit', handleFormSubmit);
+            }
 
-            // REVISI: Event listener untuk mengaktifkan tombol submit
-            treatmentSelect.addEventListener('change', () => {
-                if (treatmentSelect.value) {
-                    submitBtn.disabled = false;
-                    submitHelper.classList.add('hidden');
-                } else {
-                    submitBtn.disabled = true;
-                    submitHelper.classList.remove('hidden');
+            function switchTab(tabName) {
+                const isForm = tabName === 'form';
+                tabForm.classList.toggle('active', isForm);
+                tabStatistics.classList.toggle('active', !isForm);
+                formSection.classList.toggle('hidden', !isForm);
+                guideSection.classList.toggle('hidden', !isForm);
+                statisticsSection.classList.toggle('hidden', isForm);
+                if (!isForm) loadRegistrantsData();
+            }
+
+            function toggleSubmitButton() {
+                const isReady = treatmentSelect.value && timeSlotSelect.value;
+                submitBtn.disabled = !isReady;
+                submitHelper.classList.toggle('hidden', isReady);
+            }
+            
+            async function fetchWithTimeout(resource, options = {}, timeout = 15000) {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), timeout);
+                const response = await fetch(resource, { ...options, signal: controller.signal });
+                clearTimeout(id);
+                return response;
+            }
+
+            async function checkExistingRegistration() {
+                const noHp = document.getElementById('noHp').value.trim();
+                const nik = document.getElementById('nik').value.trim();
+                const namaPemesan = document.getElementById('namaPemesan').value.trim();
+                if (!noHp && !nik && !namaPemesan) return;
+                
+                try {
+                    const params = new URLSearchParams({ noHp, nik, namaPemesan, action: 'checkDuplicate' });
+                    const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?${params.toString()}`);
+                    if (!response.ok) throw new Error('Cek duplikasi gagal.');
+                    const result = await response.json();
+                    
+                    if (result.data?.isDuplicate) {
+                        showAlert('Anda sudah terdaftar. Setiap orang hanya bisa mendaftar satu kali.', 'error');
+                        submitBtn.disabled = true;
+                    } else {
+                        hideAlert();
+                        toggleSubmitButton();
+                    }
+                } catch (error) {
+                    console.error("Error checking duplicate:", error);
                 }
-            });
+            }
 
-            async function initializeRealtimeForm() {
-                if (!AppConfig.googleScriptUrl.startsWith('https://')) {
-                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">
-                        KONFIGURASI BELUM SELESAI. Harap isi URL Google Apps Script Anda pada AppConfig.
-                    </p>`;
+            function showAlert(message, type) {
+                const icon = type === 'error' ? 'gg-close-o' : 'gg-info';
+                alertContainer.innerHTML = `<div class="alert alert-${type}"><i class="${icon}" style="margin-right: 12px;"></i><span>${message}</span></div>`;
+            }
+
+            function hideAlert() {
+                alertContainer.innerHTML = '';
+            }
+
+            async function initializeForm() {
+                if (!AppConfig.googleScriptUrl || !AppConfig.googleScriptUrl.startsWith('https://')) {
+                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">KONFIGURASI BELUM SELESAI. Harap isi URL Google Apps Script Anda pada AppConfig di file HTML.</p>`;
                     return;
                 }
 
                 try {
-                    const response = await fetch(`${AppConfig.googleScriptUrl}?action=getData`);
-                    if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+                    const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?action=getData`);
+                    if (!response.ok) throw new Error(`Network response error: ${response.statusText}`);
                     const result = await response.json();
 
                     if (result.result === 'success') {
                         updateFormUI(result.data);
                         updateStatistics(result.data);
                     } else {
-                        throw new Error(result.error || 'Failed to fetch data from script');
+                        throw new Error(result.error || 'Gagal mengambil data dari server.');
                     }
-
                 } catch (error) {
                     console.error("Error fetching initial data:", error);
-                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">
-                        Gagal memuat data kuota. Pastikan URL Google Apps Script benar dan sudah di-deploy.
-                    </p>`;
+                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">Gagal memuat data kuota. Pastikan URL Google Apps Script benar dan sudah di-deploy dengan benar.</p>`;
                 } finally {
-                    if (loadingState.querySelector('svg')) {
+                    if (loadingState.innerHTML.includes('svg')) {
                        loadingState.classList.add('hidden');
                     }
                     formSection.classList.remove('hidden');
                 }
             }
             
-            function updateFormUI(serverData) {
-                const { treatmentCounts, timeSlotCounts } = serverData;
-
-                // Populate treatments
-                treatmentSelect.innerHTML = '<option value="" disabled selected>-- Pilih Treatment --</option>'; // REVISI: Tambah opsi default
-                AppConfig.treatments.forEach(treatment => {
-                    const booked = treatmentCounts[treatment.name] || 0;
-                    const remaining = treatment.quota - booked;
+            function populateSelect(selectElement, items, counts) {
+                selectElement.innerHTML = `<option value="" disabled selected>-- Pilih ${selectElement.id === 'treatment' ? 'Treatment' : 'Jam'} --</option>`;
+                items.forEach(item => {
+                    const booked = counts[item.name || item.time] || 0;
+                    const remaining = item.quota - booked;
                     const option = document.createElement('option');
-                    option.value = treatment.name;
-                    option.textContent = `${treatment.name} (Sisa: ${remaining})`;
+                    option.value = item.name || item.time;
+                    option.textContent = `${item.name || item.time} (Sisa: ${remaining})`;
                     if (remaining <= 0) {
                         option.disabled = true;
                         option.textContent += ' - Penuh';
                     }
-                    treatmentSelect.appendChild(option);
-                });
-
-                // REVISI: Populate time slots dengan logika kuota baru
-                timeSlotSelect.innerHTML = '<option value="" disabled selected>-- Pilih Jam --</option>';
-                AppConfig.timeSlots.forEach(slot => {
-                    const booked = timeSlotCounts[slot.time] || 0;
-                    const remaining = slot.quota - booked;
-                    const option = document.createElement('option');
-                    option.value = slot.time;
-                    option.textContent = `${slot.time} WIB (Sisa: ${remaining})`;
-                    if (remaining <= 0) {
-                        option.disabled = true;
-                        option.textContent += ' - Penuh';
-                    }
-                    timeSlotSelect.appendChild(option);
-                });
-
-                // Populate therapists
-                therapistSelect.innerHTML = '<option value="" disabled selected>-- Pilih Terapis --</option>';
-                AppConfig.therapists.forEach(therapist => {
-                    const option = document.createElement('option');
-                    option.value = therapist;
-                    option.textContent = therapist;
-                    therapistSelect.appendChild(option);
+                    selectElement.appendChild(option);
                 });
             }
-            
-            function updateStatistics(serverData) {
-                const { treatmentCounts, timeSlotCounts } = serverData;
-                
-                const totalRegistrations = Object.values(treatmentCounts).reduce((sum, count) => sum + count, 0);
-                
-                let totalAvailable = 0;
-                AppConfig.treatments.forEach(t => {
-                    totalAvailable += Math.max(0, t.quota - (treatmentCounts[t.name] || 0));
-                });
-                AppConfig.timeSlots.forEach(s => {
-                    totalAvailable += Math.max(0, s.quota - (timeSlotCounts[s.time] || 0));
-                });
 
-                let fullSessions = 0;
-                AppConfig.timeSlots.forEach(slot => {
-                    if ((timeSlotCounts[slot.time] || 0) >= slot.quota) {
-                        fullSessions++;
-                    }
-                });
+            function updateFormUI({ treatmentCounts, timeSlotCounts }) {
+                populateSelect(treatmentSelect, AppConfig.treatments, treatmentCounts);
+                populateSelect(timeSlotSelect, AppConfig.timeSlots, timeSlotCounts);
+            }
+            
+            function updateStatistics({ treatmentCounts }) {
+                const totalRegistrations = Object.values(treatmentCounts).reduce((sum, count) => sum + count, 0);
+                const totalQuota = AppConfig.treatments.reduce((sum, t) => sum + t.quota, 0);
+                const availableSlots = totalQuota - totalRegistrations;
                 
-                totalRegistrationsEl.textContent = totalRegistrations;
-                availableSlotsEl.textContent = totalAvailable;
-                fullSlotsEl.textContent = fullSessions;
+                document.getElementById('total-registrations').textContent = totalRegistrations;
+                document.getElementById('available-slots').textContent = availableSlots > 0 ? availableSlots : 0;
+                document.getElementById('full-slots').textContent = AppConfig.treatments.filter(t => (treatmentCounts[t.name] || 0) >= t.quota).length;
             }
             
             async function loadRegistrantsData() {
+                registrantsContainer.innerHTML = '<p class="text-center text-gray-500">Memuat data...</p>';
                 try {
-                    const response = await fetch(`${AppConfig.googleScriptUrl}?action=getRegistrants`);
+                    const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?action=getRegistrants`);
                     if (!response.ok) throw new Error(`Network error: ${response.statusText}`);
                     const result = await response.json();
                     if (result.result === 'success') {
                         displayRegistrants(result.data);
                     } else {
-                        throw new Error(result.error || 'Failed to fetch registrants');
+                        throw new Error(result.error || 'Gagal mengambil data pendaftar.');
                     }
                 } catch (error) {
                     console.error("Error fetching registrants:", error);
@@ -485,19 +404,17 @@
                             </div>
                             <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${r.jamKedatangan}</span>
                         </div>
-                        <div class="text-sm text-gray-700 mt-2 pt-2 border-t">
-                           <strong>Treatment:</strong> ${r.treatment}
-                        </div>
-                        <div class="text-xs text-gray-400 mt-2 pt-2 border-t">
-                            Didaftarkan pada: ${new Date(r.timestamp).toLocaleString('id-ID')}
-                        </div>`;
+                        <div class="text-sm text-gray-700 mt-2 pt-2 border-t"><strong>Treatment:</strong> ${r.treatment}</div>
+                        <div class="text-xs text-gray-400 mt-2 pt-2 border-t">Didaftarkan pada: ${new Date(r.timestamp).toLocaleString('id-ID')}</div>`;
                     registrantsContainer.appendChild(card);
                 });
             }
 
-            form.addEventListener('submit', async (e) => {
+            async function handleFormSubmit(e) {
                 e.preventDefault();
-                
+                const btnText = document.getElementById('btn-text');
+                const btnLoader = document.getElementById('btn-loader');
+
                 btnText.classList.add('hidden');
                 btnLoader.classList.remove('hidden');
                 submitBtn.disabled = true;
@@ -506,33 +423,38 @@
                 const data = Object.fromEntries(formData.entries());
 
                 try {
-                    const response = await fetch(AppConfig.googleScriptUrl, {
+                    // Mengirim sebagai text/plain agar tidak memicu preflight OPTIONS request
+                    const response = await fetchWithTimeout(AppConfig.googleScriptUrl, {
                         method: 'POST',
                         body: JSON.stringify(data),
-                        headers: { "Content-Type": "text/plain;charset=utf-8" }
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        redirect: 'follow'
                     });
                     
                     const result = await response.json();
-                    if (result.result !== 'success') throw new Error('Submission failed');
+                    if (result.result !== 'success') {
+                        // PERBAIKAN: Menangkap error duplikasi yang spesifik dari server
+                        if (result.error && result.error.includes('duplicate')) {
+                            throw new Error(result.error.replace('duplicate: ', ''));
+                        }
+                        throw new Error(result.error || 'Gagal mengirimkan data.');
+                    }
 
-                    showSuccess(data);
+                    showSuccess(result.data.reservationId, data);
                     form.reset();
-                    loadingState.classList.remove('hidden');
-                    formSection.classList.add('hidden');
-                    initializeRealtimeForm();
+                    initializeForm();
 
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+                    showAlert(error.message || 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.', 'error');
                 } finally {
                     btnText.classList.remove('hidden');
                     btnLoader.classList.add('hidden');
-                    // Tombol akan tetap disabled sampai treatment dipilih lagi
+                    // Tombol tetap disabled setelah submit, user harus memilih lagi
                 }
-            });
+            }
 
-            function showSuccess(data) {
-                const reservationId = 'JBKNP' + Date.now().toString().slice(-6);
+            function showSuccess(reservationId, data) {
                 const currentDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 
                 document.getElementById('coupon-id').textContent = reservationId;
@@ -540,38 +462,32 @@
                 document.getElementById('coupon-anak').textContent = data.namaAnak;
                 document.getElementById('coupon-treatment').textContent = data.treatment;
                 document.getElementById('coupon-jam').textContent = data.jamKedatangan + ' WIB';
-                document.getElementById('coupon-terapis').textContent = data.terapis;
+                document.getElementById('coupon-terapis').textContent = "Akan Ditentukan";
                 document.getElementById('coupon-tanggal').textContent = currentDate;
 
-                // Generate Barcode
-                JsBarcode("#barcode", reservationId, {
-                    format: "CODE128",
-                    lineColor: "#000",
-                    width: 2,
-                    height: 50,
-                    displayValue: false
-                });
+                JsBarcode("#barcode", reservationId, { format: "CODE128", lineColor: "#000", width: 2, height: 50, displayValue: false });
 
                 successModal.classList.remove('hidden');
-                setTimeout(() => {
-                    successContent.classList.remove('scale-95', 'opacity-0');
-                }, 50);
+                setTimeout(() => successContent.classList.remove('scale-95', 'opacity-0'), 50);
             }
-
-            closeModalBtn.addEventListener('click', () => {
+            
+            function closeModal() {
                 successContent.classList.add('scale-95', 'opacity-0');
                 setTimeout(() => successModal.classList.add('hidden'), 300);
-            });
+            }
 
-            printCouponBtn.addEventListener('click', () => {
-                document.getElementById('coupon-container').classList.remove('hidden');
+            function printCoupon() {
+                const couponArea = document.getElementById('coupon-container');
+                couponArea.classList.remove('hidden');
                 setTimeout(() => {
                     window.print();
-                    document.getElementById('coupon-container').classList.add('hidden');
+                    couponArea.classList.add('hidden');
                 }, 100);
-            });
+            }
 
-            initializeRealtimeForm();
+            // Inisialisasi aplikasi
+            initializeEventListeners();
+            initializeForm();
         });
     </script>
 </body>
