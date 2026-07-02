@@ -1,215 +1,468 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- Pengaturan dasar dokumen HTML -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta viewport sangat penting agar tampilan responsif di layar HP (Mobile) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reservasi Jum'at Berkah - Klinik Nabilah Pulungan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Library untuk generate barcode -->
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    
+    <!-- Memuat Font 'Plus Jakarta Sans' dari Google Fonts untuk tampilan elegan -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://css.gg/css?=|check-o|close-o|info" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .form-container { background: white; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-        .btn-primary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; transition: all 0.3s; }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2); }
-        .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
-        .input-field { border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.75rem 1rem; transition: all 0.3s; }
-        .input-field:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); transition: all 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @media print {
-            body * { visibility: hidden; }
-            #coupon-container, #coupon-container * { visibility: visible; }
-            #coupon-container { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex !important; justify-content: center; align-items: center; }
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Memuat ikon Phosphor (Ikon modern dan estetik) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Memuat framework Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat library JsBarcode untuk membuat Barcode di tiket -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <!-- Konfigurasi kustom untuk Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // Mengatur font default menjadi Plus Jakarta Sans
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    // Membuat animasi kustom untuk efek opening
+                    animation: {
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    // Detail keyframes (pergerakan animasi)
+                    keyframes: {
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
         }
-        .tab-button.active { background: linear-gradient(135deg, #3b82f6, #818cf8); color: white; }
-        .alert { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex; align-items: center; }
-        .alert-error { background-color: #fee2e2; border: 1px solid #fecaca; color: #dc2626; }
-        .alert-success { background-color: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; }
+    </script>
+
+    <!-- CSS Kustom untuk efek spesifik yang tidak dicakup Tailwind -->
+    <style>
+        /* Mengatur warna latar belakang halaman web menjadi putih sedikit keabu-abuan */
+        body { 
+            background-color: #fafafa; 
+            color: #18181b; /* Warna teks abu-abu sangat gelap (hampir hitam) */
+        }
+
+        /* Styling untuk kotak input form */
+        .input-field { 
+            background-color: #ffffff;
+            border: 1px solid #e4e4e7; /* Border tipis estetik */
+            border-radius: 0.75rem; /* Ujung membulat */
+            padding: 1rem 1.25rem; /* Spasi dalam agar luas di-tap di HP */
+            font-size: 16px; /* 16px penting agar iOS/iPhone tidak otomatis zoom-in saat mengetik */
+            transition: all 0.3s ease;
+        }
+        /* Efek ketika kotak input diklik/difokuskan */
+        .input-field:focus { 
+            outline: none; 
+            border-color: #18181b; /* Border berubah hitam */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Bayangan lembut */
+        }
+
+        /* Styling untuk wadah form (Card) bergaya minimalis */
+        .minimal-card {
+            background: #ffffff;
+            border: 1px solid #f4f4f5;
+            border-radius: 1.5rem;
+            /* Bayangan sangat lembut khas desain modern/Apple-like */
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Styling Tombol Utama (Hitam Elegan) */
+        .btn-primary { 
+            background: #18181b; /* Hitam Solid */
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover:not(:disabled) { 
+            transform: scale(0.98); /* Sedikit mengecil saat ditekan */
+            background: #27272a;
+        }
+        /* Efek jika tombol belum bisa diklik (disabled) */
+        .btn-primary:disabled { 
+            background: #e4e4e7; 
+            color: #a1a1aa; 
+            cursor: not-allowed; 
+        }
+
+        /* Styling untuk Tab Menu (Form & Statistik) */
+        .tab-button { 
+            transition: all 0.3s ease; 
+            color: #71717a; 
+            border: 1px solid transparent;
+        }
+        /* Efek Tab yang sedang aktif */
+        .tab-button.active { 
+            background: #18181b; 
+            color: #ffffff; 
+            border-color: #18181b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+
+        /* Kelas bantuan untuk mengatur jeda waktu animasi (Staggered animation) */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        /* Styling bentuk tiket (Kupon) agar berlubang di samping */
+        .ticket-shape {
+            position: relative;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        /* Membuat efek lubang kiri dan kanan tiket */
+        .ticket-shape::before, .ticket-shape::after {
+            content: ''; position: absolute; top: 50%; width: 30px; height: 30px;
+            background-color: #f4f4f5; /* Menyamai warna background modal */
+            border-radius: 50%; transform: translateY(-50%); z-index: 10;
+        }
+        .ticket-shape::before { left: -15px; } /* Lubang kiri */
+        .ticket-shape::after { right: -15px; } /* Lubang kanan */
+        
+        /* Garis putus-putus pada tiket */
+        .ticket-divider { border-top: 2px dashed #e4e4e7; position: relative; }
+
+        /* Aturan khusus saat halaman di-print atau di-save as PDF */
+        @media print {
+            /* Sembunyikan semua elemen di body */
+            body * { visibility: hidden; }
+            /* Hanya tampilkan bagian kupon/tiket */
+            #coupon-container, #coupon-container * { visibility: visible; }
+            #coupon-container { 
+                position: absolute; left: 0; top: 0; width: 100%; height: 100%; 
+                display: flex !important; justify-content: center; align-items: flex-start;
+                padding-top: 2rem; background: white;
+            }
+            .ticket-shape { box-shadow: none; border: 1px solid #d4d4d8; }
+            .ticket-shape::before, .ticket-shape::after { display: none; } /* Hilangkan efek lubang saat diprint */
+        }
+
+        /* Desain Alert Kustom (Pesan peringatan/sukses) */
+        .alert { padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; border: 1px solid; }
+        .alert-error { background-color: #fafafa; border-color: #ef4444; color: #ef4444; }
+        
+        /* Modifikasi Scrollbar agar lebih tipis dan elegan */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f4f4f5; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
     </style>
 </head>
-<body class="p-4 sm:p-8">
-    <div class="max-w-6xl mx-auto">
+
+<body class="relative min-h-screen antialiased p-4 sm:p-6 font-sans">
+    
+    <!-- Wadah utama, dibatasi lebarnya agar tidak terlalu lebar di Desktop, pas di Mobile -->
+    <div class="max-w-3xl mx-auto relative z-10 pb-10">
         
-        <header class="text-center mb-8 animate-fade-in">
-            <h1 class="text-4xl font-bold text-blue-800">Klinik Nabilah Pulungan</h1>
-            <p class="text-2xl font-semibold text-indigo-500 mt-2">✨ Program Jum'at Berkah ✨</p>
-            <p class="text-gray-600 mt-2">Formulir Reservasi Treatment Khusus Hari Jum'at</p>
+        <!-- HEADER WEB - Menerapkan animasi slide-up (muncul dari bawah) -->
+        <header class="text-center mb-8 pt-4 opacity-0 animate-slide-up">
+            <!-- Ikon Rumah Sakit Monokrom -->
+            <div class="inline-flex items-center justify-center p-4 bg-white rounded-2xl shadow-sm border border-zinc-100 mb-5">
+                <i class="ph-fill ph-hospital text-4xl text-zinc-800"></i>
+            </div>
+            <!-- Judul Klinik -->
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 mb-3">
+                Klinik Nabilah Pulungan
+            </h1>
+            <!-- Badge Program -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900 text-white font-medium text-sm mb-4">
+                <i class="ph-bold ph-sparkle"></i> Program Jum'at Berkah <i class="ph-bold ph-sparkle"></i>
+            </div>
+            <!-- Deskripsi -->
+            <p class="text-zinc-500 text-base max-w-md mx-auto">Reservasi treatment khusus hari Jum'at. Cepat, mudah, dan elegan.</p>
         </header>
 
-        <div class="flex space-x-2 mb-6 bg-white rounded-xl p-1 shadow-md animate-fade-in">
-            <button id="tab-form" class="tab-button flex-1 py-3 px-4 rounded-xl font-semibold active">Form Reservasi</button>
-            <button id="tab-statistics" class="tab-button flex-1 py-3 px-4 rounded-xl font-semibold">Data Pendaftar</button>
+        <!-- MENU TAB (Form vs Statistik) - Menerapkan jeda animasi 100ms -->
+        <div class="p-1.5 mb-8 bg-white border border-zinc-200 rounded-2xl flex space-x-1 shadow-sm opacity-0 animate-slide-up delay-100">
+            <!-- Tombol Tab Form (Aktif secara default) -->
+            <button id="tab-form" class="tab-button flex-1 py-3 px-4 rounded-xl font-bold active flex items-center justify-center gap-2 text-sm sm:text-base">
+                <i class="ph-bold ph-pencil-simple text-lg"></i> Pendaftaran
+            </button>
+            <!-- Tombol Tab Statistik -->
+            <button id="tab-statistics" class="tab-button flex-1 py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base">
+                <i class="ph-bold ph-users text-lg"></i> Kuota & Data
+            </button>
         </div>
 
-        <div id="guide-section" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-8 animate-fade-in" role="alert">
-            <p class="font-bold text-lg mb-2">Panduan Mengikuti Event Jum'at Berkah</p>
-            <ol class="list-decimal list-inside space-y-1">
-                <li>Isi formulir ini dengan data yang lengkap dan benar.</li>
-                <li>Pilih treatment dan jam kedatangan yang diinginkan (selama kuota masih ada).</li>
-                <li>Setelah berhasil mendaftar, Anda akan mendapatkan kupon digital.</li>
-                <li><b>Cetak atau screenshot kupon</b> tersebut sebagai bukti pendaftaran.</li>
-                <li>Tunjukkan kupon saat datang ke klinik untuk verifikasi.</li>
-                <li><b>Setiap orang hanya dapat mendaftar satu kali (berdasarkan NIK, No HP, dan Nama).</b></li>
+        <!-- BAGIAN PANDUAN - Menerapkan jeda animasi 200ms -->
+        <div id="guide-section" class="bg-zinc-50 border border-zinc-200 p-5 sm:p-6 rounded-3xl mb-8 opacity-0 animate-slide-up delay-200" role="alert">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-2 bg-zinc-200 rounded-full text-zinc-800"><i class="ph-bold ph-info text-lg"></i></div>
+                <h2 class="font-bold text-lg text-zinc-900">Panduan Reservasi</h2>
+            </div>
+            <!-- Daftar panduan -->
+            <ol class="list-decimal list-inside space-y-2 text-zinc-600 text-sm sm:text-base ml-2 leading-relaxed">
+                <li>Lengkapi data diri pada formulir di bawah.</li>
+                <li>Pilih treatment dan waktu kedatangan.</li>
+                <li>Simpan <b>Kupon Digital (E-Ticket)</b> setelah berhasil.</li>
+                <li>Tunjukkan E-Ticket di klinik.</li>
+                <li class="font-bold text-zinc-900">Satu identitas (NIK/No HP) = Satu pendaftaran.</li>
             </ol>
         </div>
         
-        <div id="loading-state" class="text-center py-10">
-            <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="mt-2 text-gray-600">Memuat kuota dan jadwal terbaru...</p>
+        <!-- INDIKATOR LOADING saat pertama kali web dibuka -->
+        <div id="loading-state" class="text-center py-16 opacity-0 animate-slide-up delay-300">
+            <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-zinc-400 mx-auto mb-4"></i>
+            <p class="text-zinc-500 font-medium animate-pulse">Sinkronisasi data sistem...</p>
         </div>
 
-        <div id="form-section" class="form-container p-6 sm:p-10 hidden animate-fade-in">
+        <!-- BAGIAN FORMULIR UTAMA -->
+        <div id="form-section" class="minimal-card p-5 sm:p-8 hidden opacity-0 animate-slide-up delay-300">
             <form id="reservationForm">
+                <!-- Tempat munculnya pesan error jika NIK/HP ganda -->
                 <div id="alert-container"></div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                    
+                    <!-- KELOMPOK 1: Data Pemesan -->
                     <div class="md:col-span-2">
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Identitas Pemesan</h3>
+                        <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-100 pb-2 mb-2">1. Info Pemesan</h3>
                     </div>
                     <div>
-                        <label for="namaPemesan" class="block text-sm font-medium text-gray-700 mb-1">Nama Pemesan</label>
-                        <input type="text" id="namaPemesan" name="namaPemesan" class="w-full input-field" required>
+                        <label for="namaPemesan" class="block text-sm font-bold text-zinc-700 mb-2">Nama Lengkap</label>
+                        <input type="text" id="namaPemesan" name="namaPemesan" class="w-full input-field" required placeholder="Sesuai KTP">
                     </div>
                     <div>
-                        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
-                        <input type="text" id="nik" name="nik" class="w-full input-field" required placeholder="Nomor Induk Kependudukan">
+                        <label for="nik" class="block text-sm font-bold text-zinc-700 mb-2">NIK KTP</label>
+                        <input type="number" id="nik" name="nik" class="w-full input-field" required placeholder="16 Digit Angka">
                     </div>
                     <div>
-                        <label for="noHp" class="block text-sm font-medium text-gray-700 mb-1">No. HP / WhatsApp</label>
-                        <input type="tel" id="noHp" name="noHp" class="w-full input-field" required placeholder="Contoh: 081234567890">
+                        <label for="noHp" class="block text-sm font-bold text-zinc-700 mb-2">WhatsApp Aktif</label>
+                        <div class="relative">
+                            <!-- Ikon WA di dalam kotak input -->
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"><i class="ph-bold ph-whatsapp-logo text-xl"></i></span>
+                            <input type="tel" id="noHp" name="noHp" class="w-full input-field pl-12" required placeholder="08xxxxxxxxxx">
+                        </div>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                        <input type="text" id="alamat" name="alamat" class="w-full input-field" required>
+                        <label for="alamat" class="block text-sm font-bold text-zinc-700 mb-2">Domisili / Alamat</label>
+                        <input type="text" id="alamat" name="alamat" class="w-full input-field" required placeholder="Nama Jalan, Desa/Kelurahan">
                     </div>
                     
-                    <div class="md:col-span-2 mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Data Mom / Baby / Kid</h3>
+                    <!-- KELOMPOK 2: Data Pasien -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-100 pb-2 mb-2">2. Data Pasien</h3>
                     </div>
                     <div>
-                        <label for="namaAnak" class="block text-sm font-medium text-gray-700 mb-1">Nama Mom / Baby / Kid</label>
-                        <input type="text" id="namaAnak" name="namaAnak" class="w-full input-field" required>
+                        <label for="namaAnak" class="block text-sm font-bold text-zinc-700 mb-2">Nama Pasien (Mom/Baby)</label>
+                        <input type="text" id="namaAnak" name="namaAnak" class="w-full input-field" required placeholder="Nama ibu atau anak">
                     </div>
                     <div>
-                        <label for="tglLahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                        <label for="tglLahir" class="block text-sm font-bold text-zinc-700 mb-2">Tanggal Lahir</label>
                         <input type="date" id="tglLahir" name="tglLahir" class="w-full input-field" required>
                     </div>
                     
-                    <div class="md:col-span-2 mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">3. Detail Reservasi</h3>
+                    <!-- KELOMPOK 3: Pilihan Treatment -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-100 pb-2 mb-2">3. Treatment & Waktu</h3>
                     </div>
                     <div>
-                        <label for="treatment" class="block text-sm font-medium text-gray-700 mb-1">Pilih Treatment</label>
-                        <select id="treatment" name="treatment" class="w-full input-field" required></select>
+                        <label for="treatment" class="block text-sm font-bold text-zinc-700 mb-2">Jenis Treatment</label>
+                        <div class="relative">
+                            <!-- Dropdown akan diisi oleh JavaScript -->
+                            <select id="treatment" name="treatment" class="w-full input-field appearance-none cursor-pointer" required></select>
+                            <i class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"></i>
+                        </div>
                     </div>
                     <div>
-                        <label for="jamKedatangan" class="block text-sm font-medium text-gray-700 mb-1">Pilih Jam Kedatangan</label>
-                         <select id="jamKedatangan" name="jamKedatangan" class="w-full input-field" required></select>
+                        <label for="jamKedatangan" class="block text-sm font-bold text-zinc-700 mb-2">Jam Kedatangan</label>
+                        <div class="relative">
+                            <!-- Dropdown akan diisi oleh JavaScript -->
+                            <select id="jamKedatangan" name="jamKedatangan" class="w-full input-field appearance-none cursor-pointer" required></select>
+                            <i class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"></i>
+                        </div>
                     </div>
                     
-                    <div class="md:col-span-2 mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">4. Keluhan (Opsional)</h3>
+                    <!-- KELOMPOK 4: Tambahan -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-100 pb-2 mb-2">4. Tambahan (Opsional)</h3>
                     </div>
                     <div class="md:col-span-2">
-                        <textarea id="keluhan" name="keluhan" rows="3" class="w-full input-field" placeholder="Jelaskan keluhan atau hal khusus yang perlu diperhatikan..."></textarea>
+                        <textarea id="keluhan" name="keluhan" rows="3" class="w-full input-field resize-none" placeholder="Tuliskan keluhan medis atau catatan khusus di sini..."></textarea>
                     </div>
                 </div>
                 
-                <div class="mt-8 text-center">
-                    <button type="submit" id="submitBtn" class="w-full md:w-1/2 btn-primary font-bold py-3 px-4 rounded-lg text-lg" disabled>
-                        <span id="btn-text">Daftar Sekarang</span>
-                        <span id="btn-loader" class="hidden">
-                            <svg class="animate-spin h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Memproses...
+                <!-- TOMBOL SUBMIT -->
+                <div class="mt-10 flex flex-col items-center">
+                    <!-- Tombol ini disabled secara default sampai user memilih treatment dan jam -->
+                    <button type="submit" id="submitBtn" class="w-full btn-primary font-bold py-4 px-6 rounded-xl text-base flex justify-center items-center gap-2" disabled>
+                        <span id="btn-text" class="flex items-center gap-2">
+                            Selesaikan Reservasi <i class="ph-bold ph-arrow-right"></i>
+                        </span>
+                        <!-- Loader saat tombol diklik (disembunyikan secara default) -->
+                        <span id="btn-loader" class="hidden flex items-center gap-2">
+                            <i class="ph-bold ph-spinner animate-spin text-xl"></i> Sedang Memproses...
                         </span>
                     </button>
-                    <p id="submit-helper" class="text-sm text-gray-500 mt-2">Pilih treatment dan jam kedatangan untuk mendaftar.</p>
+                    <!-- Teks bantuan di bawah tombol -->
+                    <p id="submit-helper" class="text-xs font-medium text-zinc-500 mt-4 bg-zinc-100 px-4 py-2 rounded-full flex items-center gap-2">
+                        <i class="ph-fill ph-info"></i> Silakan pilih treatment dan jam terlebih dahulu.
+                    </p>
                 </div>
             </form>
         </div>
         
-        <div id="statistics-section" class="hidden animate-fade-in">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="stat-card bg-white p-6 rounded-2xl shadow-md text-center">
-                    <div class="text-4xl font-bold text-blue-600 mb-2" id="total-registrations">0</div>
-                    <div class="text-gray-600">Total Pendaftar</div>
+        <!-- BAGIAN STATISTIK (Hanya muncul jika Tab Statistik diklik) -->
+        <div id="statistics-section" class="hidden opacity-0 animate-slide-up delay-100">
+            <!-- 3 Kotak Indikator Angka -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6">
+                <!-- Total Pendaftar -->
+                <div class="bg-white p-4 sm:p-6 rounded-2xl border border-zinc-200 flex flex-col items-center justify-center">
+                    <div class="text-3xl font-extrabold text-zinc-900 mb-1" id="total-registrations">0</div>
+                    <div class="text-xs sm:text-sm text-zinc-500 font-bold uppercase tracking-wide">Pendaftar</div>
                 </div>
-                <div class="stat-card bg-white p-6 rounded-2xl shadow-md text-center">
-                    <div class="text-4xl font-bold text-green-600 mb-2" id="available-slots">0</div>
-                    <div class="text-gray-600">Total Kuota Tersedia</div>
+                <!-- Sisa Kuota -->
+                <div class="bg-white p-4 sm:p-6 rounded-2xl border border-zinc-200 flex flex-col items-center justify-center">
+                    <div class="text-3xl font-extrabold text-zinc-900 mb-1" id="available-slots">0</div>
+                    <div class="text-xs sm:text-sm text-zinc-500 font-bold uppercase tracking-wide">Sisa Kuota</div>
                 </div>
-                <div class="stat-card bg-white p-6 rounded-2xl shadow-md text-center">
-                    <div class="text-4xl font-bold text-red-600 mb-2" id="full-slots">0</div>
-                    <div class="text-gray-600">Sesi Penuh</div>
+                <!-- Sesi Penuh -->
+                <div class="bg-zinc-900 p-4 sm:p-6 rounded-2xl border border-zinc-800 flex flex-col items-center justify-center col-span-2 md:col-span-1">
+                    <div class="text-3xl font-extrabold text-white mb-1" id="full-slots">0</div>
+                    <div class="text-xs sm:text-sm text-zinc-400 font-bold uppercase tracking-wide">Sesi Penuh</div>
                 </div>
             </div>
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Daftar Pendaftar (20 Terbaru)</h3>
-            <div id="registrants-container" class="space-y-4"></div>
+            <!-- Daftar List Pendaftar Terkini -->
+            <div class="minimal-card p-5 sm:p-6">
+                <div class="flex items-center gap-2 mb-5 border-b border-zinc-100 pb-3">
+                    <i class="ph-bold ph-list-bullets text-zinc-800 text-xl"></i>
+                    <h3 class="text-lg font-bold text-zinc-900">Pendaftar Terkini</h3>
+                </div>
+                <!-- Wadah ini akan diisi daftar pendaftar oleh JavaScript -->
+                <div id="registrants-container" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+            </div>
         </div>
 
-        <div id="success-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all scale-95 opacity-0" id="success-content">
-                <i class="gg-check-o" style="color: #22c55e; --ggs: 3; margin: 0 auto;"></i>
-                <h2 class="text-3xl font-bold text-gray-800 mt-4">Pendaftaran Berhasil!</h2>
-                <p class="text-gray-600 mt-2">Reservasi Anda telah kami terima. Silakan cetak atau screenshot kupon di bawah ini.</p>
-                <div class="mt-6">
-                    <button id="printCouponBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all">Cetak Kupon</button>
-                    <button id="closeModalBtn" class="w-full mt-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition-all">Tutup</button>
+        <!-- MODAL (POPUP) SUKSES MENDAFTAR -->
+        <!-- Z-50 memastikan modal berada paling depan menutupi web -->
+        <div id="success-modal" class="hidden fixed inset-0 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <!-- Isi Modal -->
+            <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full text-center transform transition-all duration-300 scale-95 opacity-0 overflow-hidden border border-zinc-100" id="success-content">
+                <!-- Bagian atas modal (Header Sukses) -->
+                <div class="bg-zinc-50 p-8 border-b border-zinc-100 flex flex-col items-center">
+                    <div class="w-20 h-20 bg-zinc-900 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                        <i class="ph-bold ph-check text-4xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-zinc-900">Reservasi Sukses!</h2>
+                </div>
+                <!-- Bagian bawah modal -->
+                <div class="p-8">
+                    <p class="text-zinc-500 text-sm mb-6 leading-relaxed">Data Anda telah masuk ke sistem kami. Silakan lihat dan simpan e-ticket Anda.</p>
+                    <div class="space-y-3">
+                        <button id="printCouponBtn" class="w-full bg-zinc-900 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition hover:bg-zinc-800">
+                            <i class="ph-bold ph-ticket"></i> Lihat E-Ticket
+                        </button>
+                        <button id="closeModalBtn" class="w-full bg-white border border-zinc-200 text-zinc-700 font-bold py-3.5 px-4 rounded-xl transition hover:bg-zinc-50">
+                            Tutup
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Area Kupon yang bisa dicetak -->
-    <div id="coupon-container" class="p-4 hidden">
-        <div id="coupon" class="max-w-md w-full mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div class="p-6 bg-blue-50">
-                <div class="text-center">
-                    <h2 class="text-2xl font-bold text-blue-800">Klinik Nabilah Pulungan</h2>
-                    <p class="text-lg font-semibold text-indigo-500">Kupon Reservasi Jum'at Berkah</p>
+    <!-- TAMPILAN KUPON / TIKET (Awalnya disembunyikan, muncul saat tombol 'Lihat E-Ticket' diklik) -->
+    <!-- fixed inset-0 menutupi seluruh layar -->
+    <div id="coupon-container" class="hidden fixed inset-0 z-[100] bg-zinc-100/90 backdrop-blur-md overflow-y-auto p-4 flex items-center justify-center">
+        <!-- Struktur bentuk tiket -->
+        <div id="coupon" class="ticket-shape max-w-sm w-full mx-auto flex flex-col">
+            
+            <!-- Header Tiket -->
+            <div class="bg-zinc-900 rounded-t-[16px] p-6 text-center text-white">
+                <h2 class="text-xl font-extrabold tracking-tight">KLINIK NABILAH</h2>
+                <div class="inline-block border border-zinc-700 text-zinc-300 px-3 py-1 rounded-full text-xs font-bold mt-2 tracking-widest uppercase">
+                    Jum'at Berkah
                 </div>
             </div>
-            <div class="p-6 space-y-3">
-                <div class="text-center">
-                    <p class="text-sm text-gray-500">ID Reservasi</p>
-                    <p id="coupon-id" class="font-mono text-xl font-bold text-gray-800"></p>
+            
+            <!-- Badan Tiket (Informasi) -->
+            <div class="p-6 bg-white space-y-5">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Booking ID</p>
+                        <p id="coupon-id" class="font-mono text-xl font-extrabold text-zinc-900 tracking-wider"></p>
+                    </div>
+                    <i class="ph-fill ph-check-circle text-2xl text-zinc-900"></i>
                 </div>
-                <div class="border-t border-dashed my-3"></div>
-                <div><p class="text-sm text-gray-500">Nama Pemesan</p><p id="coupon-nama" class="font-semibold text-lg text-gray-800"></p></div>
-                <div><p class="text-sm text-gray-500">Nama Anak</p><p id="coupon-anak" class="font-semibold text-lg text-gray-800"></p></div>
-                <div><p class="text-sm text-gray-500">Treatment</p><p id="coupon-treatment" class="font-semibold text-lg text-gray-800"></p></div>
+                
+                <div class="ticket-divider"></div>
+                
                 <div class="grid grid-cols-2 gap-4">
-                    <div><p class="text-sm text-gray-500">Jam Datang</p><p id="coupon-jam" class="font-semibold text-lg text-gray-800"></p></div>
-                    <div><p class="text-sm text-gray-500">Terapis</p><p id="coupon-terapis" class="font-semibold text-lg text-gray-800"></p></div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Pemesan</p>
+                        <p id="coupon-nama" class="font-bold text-zinc-900 text-sm"></p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Pasien</p>
+                        <p id="coupon-anak" class="font-bold text-zinc-900 text-sm"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Treatment</p>
+                    <p id="coupon-treatment" class="font-bold text-zinc-900 text-sm"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1"><i class="ph-bold ph-clock mr-1"></i> Waktu</p>
+                        <p id="coupon-jam" class="font-extrabold text-zinc-900 text-lg"></p>
+                    </div>
+                    <div class="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1"><i class="ph-bold ph-user-circle mr-1"></i> Terapis</p>
+                        <p id="coupon-terapis" class="font-bold text-zinc-900 text-sm"></p>
+                    </div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 border-t"><svg id="barcode" class="w-full"></svg></div>
-            <div class="p-4 bg-blue-50 text-center text-xs text-blue-700">Tunjukkan kupon ini saat verifikasi. Berlaku untuk <strong id="coupon-tanggal"></strong>.</div>
+            
+            <!-- Footer Tiket & Barcode -->
+            <div class="ticket-divider"></div>
+            <div class="p-6 bg-white rounded-b-[16px] text-center flex flex-col items-center">
+                <!-- SVG untuk menampung Barcode -->
+                <svg id="barcode" class="max-w-full h-auto mb-2"></svg>
+                <p class="text-[10px] text-zinc-400 uppercase tracking-widest font-bold mt-2">
+                    Valid for: <span id="coupon-tanggal" class="text-zinc-800"></span>
+                </p>
+            </div>
+            
         </div>
+        <!-- Tombol silang untuk menutup preview tiket (disembunyikan saat diprint menggunakan kelas print:hidden) -->
+        <button onclick="document.getElementById('coupon-container').classList.add('hidden')" class="fixed top-4 right-4 bg-white/50 backdrop-blur border border-zinc-200 text-zinc-800 p-2.5 rounded-full shadow-sm hover:bg-white print:hidden z-[110]">
+            <i class="ph-bold ph-x text-lg"></i>
+        </button>
     </div>
 
+    <!-- LOGIKA JAVASCRIPT APLIKASI -->
     <script>
+        // Objek AppConfig menyimpan pengaturan utama aplikasi
         const AppConfig = {
-            // PENTING: GANTI DENGAN URL WEB APP BARU ANDA SETELAH DEPLOY ULANG
+            // URL Web App Google Apps Script. (PENTING: Jangan lupa update ini jika deploy ulang GAS!)
             googleScriptUrl: 'https://script.google.com/macros/s/AKfycbw1dtdO6N8DJkLaynhcXOXoNfQvbAzxkaFWFhfERRLbB9dXNxHFFzQa_GcXE82j8Gd-Og/exec',
+            
+            // Daftar treatment beserta kuota masing-masing
             treatments: [
                 { name: "Baby Treatment (Diskon 20 %)", quota: 6 },
                 { name: "ANC Pemeriksaan Kehamilan (Free)", quota: 3 }
             ],
+            
+            // Daftar pilihan jam beserta kuota masing-masing jam
             timeSlots: [
                 { time: "09:00", quota: 1 }, { time: "10:00", quota: 1 }, { time: "11:00", quota: 1 },
                 { time: "12:00", quota: 1 }, { time: "13:00", quota: 1 }, { time: "14:00", quota: 1 },
@@ -219,7 +472,9 @@
             ]
         };
 
+        // Event DOMContentLoaded memastikan script berjalan HANYA setelah desain web termuat semua
         document.addEventListener('DOMContentLoaded', () => {
+            // MENGAMBIL ELEMEN DARI HTML BERDASARKAN ID UNTUK DIMANIPULASI
             const form = document.getElementById('reservationForm');
             const treatmentSelect = document.getElementById('treatment');
             const timeSlotSelect = document.getElementById('jamKedatangan');
@@ -236,229 +491,297 @@
             const registrantsContainer = document.getElementById('registrants-container');
             const alertContainer = document.getElementById('alert-container');
             
+            // Fungsi ini menyatukan semua aksi "mendengarkan klik / ketikan"
             function initializeEventListeners() {
+                // Berpindah tab saat diklik
                 tabForm.addEventListener('click', () => switchTab('form'));
                 tabStatistics.addEventListener('click', () => switchTab('statistics'));
                 
+                // Mendaftarkan event 'blur' (saat user selesai mengetik dan pindah kotak) untuk cek data ganda
                 const inputsToValidate = ['namaPemesan', 'nik', 'noHp'];
                 inputsToValidate.forEach(id => {
                     document.getElementById(id)?.addEventListener('blur', checkExistingRegistration);
                 });
 
+                // Mendaftarkan event 'change' saat dropdown diubah untuk mengecek apakah tombol daftar bisa diaktifkan
                 const selectsToValidate = ['treatment', 'jamKedatangan'];
                 selectsToValidate.forEach(id => {
                      document.getElementById(id)?.addEventListener('change', toggleSubmitButton);
                 });
 
+                // Menambahkan aksi untuk tombol di modal dan form
                 document.getElementById('closeModalBtn').addEventListener('click', () => closeModal());
                 document.getElementById('printCouponBtn').addEventListener('click', () => printCoupon());
-                form.addEventListener('submit', handleFormSubmit);
+                form.addEventListener('submit', handleFormSubmit); // Saat form disubmit (Dikirim)
             }
 
+            // Fungsi untuk mengatur pergantian tampilan Tab (Formulir vs Data)
             function switchTab(tabName) {
                 const isForm = tabName === 'form';
+                // Ubah gaya tombol tab menjadi aktif/tidak aktif
                 tabForm.classList.toggle('active', isForm);
                 tabStatistics.classList.toggle('active', !isForm);
+                
+                // Sembunyikan atau tampilkan bagian formulir dan panduan
                 formSection.classList.toggle('hidden', !isForm);
                 guideSection.classList.toggle('hidden', !isForm);
+                
+                // Sembunyikan atau tampilkan bagian statistik
                 statisticsSection.classList.toggle('hidden', isForm);
+                
+                // Jika user pindah ke tab Statistik, load datanya dari server
                 if (!isForm) loadRegistrantsData();
             }
 
+            // Fungsi untuk mengaktifkan tombol 'Kirim' HANYA JIKA treatment dan jam sudah dipilih
             function toggleSubmitButton() {
                 const isReady = treatmentSelect.value && timeSlotSelect.value;
                 submitBtn.disabled = !isReady;
+                // Sembunyikan pesan merah di bawah tombol jika sudah siap
                 submitHelper.classList.toggle('hidden', isReady);
             }
             
+            // Fungsi kustom untuk mengambil data (fetch) dengan batas waktu (timeout). Mencegah web macet (loading terus) jika koneksi jelek.
             async function fetchWithTimeout(resource, options = {}, timeout = 15000) {
-                const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), timeout);
+                const controller = new AbortController(); // Alat pembatalan request
+                const id = setTimeout(() => controller.abort(), timeout); // Jika lewat 15 detik, batalkan
                 const response = await fetch(resource, { ...options, signal: controller.signal });
-                clearTimeout(id);
+                clearTimeout(id); // Hapus timer jika sukses sebelum 15 detik
                 return response;
             }
 
+            // Fungsi untuk mengecek ke server apakah NIK/No.HP/Nama tersebut sudah pernah daftar sebelumnya
             async function checkExistingRegistration() {
+                // Ambil nilai dari inputan dan bersihkan spasi kosong di awal/akhir
                 const noHp = document.getElementById('noHp').value.trim();
                 const nik = document.getElementById('nik').value.trim();
                 const namaPemesan = document.getElementById('namaPemesan').value.trim();
+                
+                // Jika ketiga kotak masih kosong, batalkan pengecekan
                 if (!noHp && !nik && !namaPemesan) return;
                 
                 try {
+                    // Buat parameter link (query string) untuk dikirim ke Google Apps Script
                     const params = new URLSearchParams({ noHp, nik, namaPemesan, action: 'checkDuplicate' });
                     const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?${params.toString()}`);
-                    if (!response.ok) throw new Error('Cek duplikasi gagal.');
+                    
+                    if (!response.ok) throw new Error('Cek duplikasi gagal karena jaringan.');
                     const result = await response.json();
                     
+                    // Jika server membalas 'isDuplicate' bernilai true (Ada data ganda)
                     if (result.data?.isDuplicate) {
-                        showAlert('Anda sudah terdaftar. Setiap orang hanya bisa mendaftar satu kali.', 'error');
-                        submitBtn.disabled = true;
+                        showAlert('Maaf, identitas ini sudah terdaftar. 1 Identitas hanya untuk 1 Reservasi.', 'error');
+                        submitBtn.disabled = true; // Matikan tombol daftar
                     } else {
-                        hideAlert();
-                        toggleSubmitButton();
+                        hideAlert(); // Hapus pesan error jika aman
+                        toggleSubmitButton(); // Cek lagi apakah tombol sudah bisa dihidupkan
                     }
                 } catch (error) {
                     console.error("Error checking duplicate:", error);
                 }
             }
 
+            // Fungsi untuk menampilkan pesan (peringatan/error) di atas form
             function showAlert(message, type) {
-                const icon = type === 'error' ? 'gg-close-o' : 'gg-info';
-                alertContainer.innerHTML = `<div class="alert alert-${type}"><i class="${icon}" style="margin-right: 12px;"></i><span>${message}</span></div>`;
+                const icon = type === 'error' ? 'ph-warning-circle' : 'ph-info';
+                alertContainer.innerHTML = `<div class="alert alert-${type}"><i class="ph-fill ${icon} text-xl mr-3"></i><span class="font-medium text-sm">${message}</span></div>`;
             }
 
+            // Fungsi untuk menyembunyikan/menghapus pesan alert
             function hideAlert() {
                 alertContainer.innerHTML = '';
             }
 
+            // FUNGSI UTAMA: Berjalan pertama kali web dibuka untuk memuat Kuota dari server
             async function initializeForm() {
+                // Pengecekan aman, jika URL belum disetting
                 if (!AppConfig.googleScriptUrl || !AppConfig.googleScriptUrl.startsWith('https://')) {
-                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">KONFIGURASI BELUM SELESAI. Harap isi URL Google Apps Script Anda pada AppConfig di file HTML.</p>`;
+                    loadingState.innerHTML = `<p class="text-red-600 text-sm font-bold p-4 bg-red-50 border border-red-200 rounded-xl">Konfigurasi URL Google Apps Script belum selesai.</p>`;
                     return;
                 }
 
                 try {
+                    // Minta data ke server (GAS) dengan parameter action=getData
                     const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?action=getData`);
                     if (!response.ok) throw new Error(`Network response error: ${response.statusText}`);
                     const result = await response.json();
 
+                    // Jika balasan server sukses
                     if (result.result === 'success') {
-                        updateFormUI(result.data);
-                        updateStatistics(result.data);
+                        updateFormUI(result.data); // Update pilihan dropdown
+                        updateStatistics(result.data); // Update angka statistik
                     } else {
                         throw new Error(result.error || 'Gagal mengambil data dari server.');
                     }
                 } catch (error) {
                     console.error("Error fetching initial data:", error);
-                    loadingState.innerHTML = `<p class="text-red-600 font-bold text-center p-4 bg-red-100 rounded-lg">Gagal memuat data kuota. Pastikan URL Google Apps Script benar dan sudah di-deploy dengan benar.</p>`;
+                    loadingState.innerHTML = `<p class="text-red-600 text-sm font-bold p-4 bg-red-50 border border-red-200 rounded-xl">Gagal memuat data kuota. Pastikan URL Script benar.</p>`;
                 } finally {
-                    if (loadingState.innerHTML.includes('svg')) {
+                    // Setelah selesai loading (sukses atau gagal), hilangkan ikon loading dan tampilkan form
+                    if (loadingState.innerHTML.includes('ph-spinner-gap')) {
                        loadingState.classList.add('hidden');
                     }
                     formSection.classList.remove('hidden');
                 }
             }
             
+            // Fungsi pembantu untuk membuat list opsi (<option>) pada dropdown (<select>)
             function populateSelect(selectElement, items, counts) {
-                selectElement.innerHTML = `<option value="" disabled selected>-- Pilih ${selectElement.id === 'treatment' ? 'Treatment' : 'Jam'} --</option>`;
+                // Buat opsi default paling atas
+                selectElement.innerHTML = `<option value="" disabled selected>-- Pilih ${selectElement.id === 'treatment' ? 'Treatment' : 'Jam Kedatangan'} --</option>`;
+                
+                // Looping (ulangi) setiap item (treatment atau jam)
                 items.forEach(item => {
+                    // Cek berapa banyak yang sudah booking berdasarkan nama/waktu, default 0
                     const booked = counts[item.name || item.time] || 0;
+                    // Hitung sisa kuota (Total Kuota dikurang Yang Booking)
                     const remaining = item.quota - booked;
+                    
+                    // Buat elemen opsi HTML
                     const option = document.createElement('option');
                     option.value = item.name || item.time;
                     option.textContent = `${item.name || item.time} (Sisa: ${remaining})`;
+                    
+                    // Jika sisa kuota sudah habis (0 atau minus)
                     if (remaining <= 0) {
-                        option.disabled = true;
-                        option.textContent += ' - Penuh';
+                        option.disabled = true; // Matikan agar tidak bisa dipilih
+                        option.textContent += ' - Penuh'; // Tambahkan label Penuh
                     }
+                    // Masukkan elemen ke dalam dropdown di HTML
                     selectElement.appendChild(option);
                 });
             }
 
+            // Fungsi untuk mengupdate tampilan Dropdown Form
             function updateFormUI({ treatmentCounts, timeSlotCounts }) {
                 populateSelect(treatmentSelect, AppConfig.treatments, treatmentCounts);
                 populateSelect(timeSlotSelect, AppConfig.timeSlots, timeSlotCounts);
             }
             
+            // Fungsi untuk mengupdate angka-angka pada tab Statistik
             function updateStatistics({ treatmentCounts }) {
+                // Hitung total orang yang sudah daftar dengan menjumlahkan semua angka di objek treatmentCounts
                 const totalRegistrations = Object.values(treatmentCounts).reduce((sum, count) => sum + count, 0);
+                // Hitung total kuota asli dari semua treatment
                 const totalQuota = AppConfig.treatments.reduce((sum, t) => sum + t.quota, 0);
+                // Hitung sisa kuota total keseluruhan
                 const availableSlots = totalQuota - totalRegistrations;
                 
+                // Masukkan angka ke elemen HTML
                 document.getElementById('total-registrations').textContent = totalRegistrations;
                 document.getElementById('available-slots').textContent = availableSlots > 0 ? availableSlots : 0;
-                document.getElementById('full-slots').textContent = AppConfig.treatments.filter(t => (treatmentCounts[t.name] || 0) >= t.quota).length;
+                
+                // Hitung berapa treatment yang statusnya sudah penuh
+                const fullTreatmentCount = AppConfig.treatments.filter(t => (treatmentCounts[t.name] || 0) >= t.quota).length;
+                document.getElementById('full-slots').textContent = fullTreatmentCount;
             }
             
+            // Fungsi untuk meminta daftar orang yang sudah mendaftar dari server
             async function loadRegistrantsData() {
-                registrantsContainer.innerHTML = '<p class="text-center text-gray-500">Memuat data...</p>';
+                // Tampilkan loading di dalam list
+                registrantsContainer.innerHTML = '<div class="text-center py-6 text-zinc-400"><i class="ph-bold ph-spinner-gap animate-spin text-2xl mb-2"></i><br><span class="text-sm">Menarik data pendaftar...</span></div>';
                 try {
                     const response = await fetchWithTimeout(`${AppConfig.googleScriptUrl}?action=getRegistrants`);
                     if (!response.ok) throw new Error(`Network error: ${response.statusText}`);
                     const result = await response.json();
+                    
                     if (result.result === 'success') {
-                        displayRegistrants(result.data);
+                        displayRegistrants(result.data); // Proses data jika sukses
                     } else {
                         throw new Error(result.error || 'Gagal mengambil data pendaftar.');
                     }
                 } catch (error) {
                     console.error("Error fetching registrants:", error);
-                    registrantsContainer.innerHTML = `<p class="text-red-600 text-center p-4 bg-red-100 rounded-lg">Gagal memuat data pendaftar.</p>`;
+                    registrantsContainer.innerHTML = `<p class="text-red-500 text-sm text-center p-4">Gagal memuat daftar.</p>`;
                 }
             }
             
+            // Fungsi untuk merender/menampilkan list pendaftar ke HTML
             function displayRegistrants(registrants) {
                 registrantsContainer.innerHTML = '';
+                
+                // Jika belum ada yang mendaftar sama sekali
                 if (registrants.length === 0) {
-                    registrantsContainer.innerHTML = `<p class="text-gray-600 text-center p-4">Belum ada pendaftar.</p>`;
+                    registrantsContainer.innerHTML = `<div class="text-zinc-400 text-center p-6 border-2 border-dashed border-zinc-200 rounded-xl"><i class="ph-fill ph-file-dashed text-3xl mb-2"></i><br><span class="text-sm">Belum ada pendaftar hari ini.</span></div>`;
                     return;
                 }
                 
+                // Jika ada, looping untuk setiap orang dan buatkan Card HTML nya
                 registrants.forEach(r => {
                     const card = document.createElement('div');
-                    card.className = 'bg-white rounded-xl shadow p-4 border border-gray-200';
+                    card.className = 'bg-white rounded-xl p-4 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
                     card.innerHTML = `
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-blue-800">${r.namaPemesan}</h3>
-                                <p class="text-sm text-gray-600">Anak: ${r.namaAnak}</p>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-bold text-zinc-900">${r.namaPemesan}</h3>
+                                <span class="text-[10px] font-bold bg-zinc-900 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">${r.jamKedatangan}</span>
                             </div>
-                            <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${r.jamKedatangan}</span>
+                            <p class="text-xs text-zinc-500 font-medium mb-2"><i class="ph-fill ph-user-circle"></i> Pasien: ${r.namaAnak}</p>
+                            <div class="text-[11px] text-zinc-700 bg-zinc-100 p-1.5 px-2 rounded-md inline-block border border-zinc-200 font-medium">Trt: ${r.treatment}</div>
                         </div>
-                        <div class="text-sm text-gray-700 mt-2 pt-2 border-t"><strong>Treatment:</strong> ${r.treatment}</div>
-                        <div class="text-xs text-gray-400 mt-2 pt-2 border-t">Didaftarkan pada: ${new Date(r.timestamp).toLocaleString('id-ID')}</div>`;
+                        <div class="text-[9px] text-zinc-400 uppercase tracking-widest sm:text-right font-bold">
+                            ${new Date(r.timestamp).toLocaleString('id-ID')}
+                        </div>`;
                     registrantsContainer.appendChild(card);
                 });
             }
 
+            // Fungsi ini dieksekusi SAAT TOMBOL DAFTAR (SUBMIT) DITEKAN
             async function handleFormSubmit(e) {
-                e.preventDefault();
+                e.preventDefault(); // Mencegah halaman web melakukan reload (refresh) bawaan browser
+                
                 const btnText = document.getElementById('btn-text');
                 const btnLoader = document.getElementById('btn-loader');
 
+                // Ubah tampilan tombol menjadi status 'Loading'
                 btnText.classList.add('hidden');
                 btnLoader.classList.remove('hidden');
                 submitBtn.disabled = true;
 
+                // Ambil semua data yang diinput oleh user
                 const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
+                const data = Object.fromEntries(formData.entries()); // Ubah menjadi format objek JS
 
                 try {
-                    // Mengirim sebagai text/plain agar tidak memicu preflight OPTIONS request
+                    // Kirim data ke Google Apps Script (Metode POST)
                     const response = await fetchWithTimeout(AppConfig.googleScriptUrl, {
                         method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(data), // Ubah objek menjadi String JSON
+                        headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain untuk menghindari isu CORS
                         redirect: 'follow'
                     });
                     
                     const result = await response.json();
+                    
                     if (result.result !== 'success') {
-                        // PERBAIKAN: Menangkap error duplikasi yang spesifik dari server
+                        // Jika server merespon ada indikasi duplikasi di detik terakhir
                         if (result.error && result.error.includes('duplicate')) {
                             throw new Error(result.error.replace('duplicate: ', ''));
                         }
                         throw new Error(result.error || 'Gagal mengirimkan data.');
                     }
 
+                    // JIKA BERHASIL: Tampilkan Modal Sukses dan Tiiket
                     showSuccess(result.data.reservationId, data);
-                    form.reset();
-                    initializeForm();
+                    form.reset(); // Bersihkan formulir
+                    initializeForm(); // Ambil ulang data kuota terbaru
 
                 } catch (error) {
                     console.error('Error:', error);
                     showAlert(error.message || 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.', 'error');
                 } finally {
+                    // Kembalikan tampilan tombol ke kondisi awal (Hilangkan loader)
                     btnText.classList.remove('hidden');
                     btnLoader.classList.add('hidden');
-                    // Tombol tetap disabled setelah submit, user harus memilih lagi
                 }
             }
 
+            // Fungsi untuk memunculkan Popup (Modal) Berhasil Daftar
             function showSuccess(reservationId, data) {
+                // Buat format tanggal hari ini (Contoh: Jumat, 10 Mei 2024)
                 const currentDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 
+                // Tempelkan data pendaftar ke elemen ID pada desain E-Ticket
                 document.getElementById('coupon-id').textContent = reservationId;
                 document.getElementById('coupon-nama').textContent = data.namaPemesan;
                 document.getElementById('coupon-anak').textContent = data.namaAnak;
@@ -467,28 +790,45 @@
                 document.getElementById('coupon-terapis').textContent = "Akan Ditentukan";
                 document.getElementById('coupon-tanggal').textContent = currentDate;
 
-                JsBarcode("#barcode", reservationId, { format: "CODE128", lineColor: "#000", width: 2, height: 50, displayValue: false });
+                // Eksekusi fungsi JsBarcode untuk menggambar barcode di dalam <svg id="barcode">
+                JsBarcode("#barcode", reservationId, { 
+                    format: "CODE128", // Tipe Barcode
+                    lineColor: "#18181b", // Warna garis barcode (Hitam estetik)
+                    width: 1.5, // Ketebalan garis
+                    height: 50, // Tinggi barcode
+                    displayValue: false, // Sembunyikan angka di bawah garis
+                    margin: 0
+                });
 
+                // Munculkan background modal yang hitam transparan
                 successModal.classList.remove('hidden');
+                // Tunda 50 milidetik, lalu buat pop-up putihnya membesar dengan halus (animasi scale)
                 setTimeout(() => successContent.classList.remove('scale-95', 'opacity-0'), 50);
             }
             
+            // Fungsi untuk menutup Modal
             function closeModal() {
+                // Kecilkan dan pudarkan modal putih terlebih dahulu
                 successContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => successModal.classList.add('hidden'), 300);
+                // Setelah animasi (sekitar 300ms) selesai, baru benar-benar hilangkan dari HTML (hidden)
+                setTimeout(() => successModal.classList.add('hidden'), 300); 
             }
 
+            // Fungsi untuk menampilkan E-Ticket dan mengeksekusi print
             function printCoupon() {
                 const couponArea = document.getElementById('coupon-container');
+                // Tampilkan e-ticket fullscreen
                 couponArea.classList.remove('hidden');
+                // Beri jeda 300ms agar e-ticket muncul sempurna, barulah panggil fungsi print browser
                 setTimeout(() => {
                     window.print();
-                    couponArea.classList.add('hidden');
-                }, 100);
+                }, 300);
             }
 
-            // Inisialisasi aplikasi
+            // JALANKAN APLIKASI
+            // Memanggil fungsi penempelan event listener (klik/ketik)
             initializeEventListeners();
+            // Memanggil fungsi penarikan data dari server pertama kali
             initializeForm();
         });
     </script>
